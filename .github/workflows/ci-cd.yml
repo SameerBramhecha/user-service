@@ -33,10 +33,14 @@ jobs:
     - name: Push Docker Image
       run: docker push ${{ secrets.AZURE_ACR_NAME }}.azurecr.io/user-service:${{ github.sha }}
 
-    - name: Set Kubeconfig
+    - name: Decode and Set Kubeconfig
       run: |
-        echo "${{ secrets.KUBE_CONFIG }}" | base64 --decode > kubeconfig
-        export KUBECONFIG=$PWD/kubeconfig
+        mkdir -p ~/.kube
+        echo "${{ secrets.KUBE_CONFIG }}" | base64 --decode > ~/.kube/config
+        chmod 600 ~/.kube/config
+
+    - name: Verify Kubernetes Connection
+      run: kubectl get nodes
 
     - name: Deploy to AKS
       run: |
