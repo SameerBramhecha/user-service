@@ -33,11 +33,12 @@ jobs:
     - name: Push Docker Image
       run: docker push ${{ secrets.AZURE_ACR_NAME }}.azurecr.io/user-service:${{ github.sha }}
 
-    - name: Decode and Set Kubeconfig
-      run: |
-        mkdir -p ~/.kube
-        echo "${{ secrets.KUBE_CONFIG }}" | base64 --decode > ~/.kube/config
-        chmod 600 ~/.kube/config
+    - name: Set Kubernetes Context
+      uses: azure/aks-set-context@v3
+      with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          cluster-name: ${{ secrets.AKS_CLUSTER_NAME }}
+          resource-group: ${{ secrets.AZURE_RESOURCE_GROUP }}
 
     - name: Verify Kubernetes Connection
       run: kubectl get nodes
