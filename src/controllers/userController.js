@@ -35,7 +35,7 @@ exports.loginUser = async (req, res) => {
 
 exports.getAllUsers = async (req, res) => { 
     try {
-        const users = await User.findAll({ attributes: ['username', 'email'] // Only selecting username and email }); 
+        const users = await User.findAll({ attributes: ['username', 'email'] }); 
             res.status(200).json(users); 
     } 
     catch (error) { 
